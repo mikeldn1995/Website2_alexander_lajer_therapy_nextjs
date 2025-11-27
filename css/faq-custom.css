@@ -1,0 +1,49 @@
+/* Custom FAQ accordion style to remove dark/black hover/active backgrounds */
+
+.accordion, .accordion .card, .accordion .card-header, .accordion .card-body {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.accordion .card-header, .accordion .card {
+  background: #fff !important;
+  border: none;
+}
+
+.accordion .btn-link,
+.accordion .btn-link:hover,
+.accordion .btn-link:focus,
+.accordion .btn-link:active {
+  color: #222 !important;
+  background: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+/* Ensure FAQ card titles wrap properly */
+.accordion .card-header .btn-link {
+  white-space: normal !important;
+  word-break: break-word;
+  text-align: left;
+}
+
+.accordion .card-body {
+  background: #fafafa;
+}
+
+@media (max-width: 767.98px) {
+  .accordion .card-body,
+  .accordion .card-header,
+  .accordion .card {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 0;
+    margin-right: 0;
+    word-break: break-word;
+  }
+  .accordion {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
