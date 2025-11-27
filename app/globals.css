@@ -443,8 +443,9 @@ a {
   padding: 1.25rem 0;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  width: 100%;
 }
 
 .navbar-item {
@@ -567,6 +568,13 @@ a {
 }
 
 @media (max-width: 1023px) {
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+  }
+
   .navbar-burger {
     display: block;
   }
@@ -585,6 +593,8 @@ a {
     box-shadow: var(--shadow-md);
     border-top: 1px solid var(--border-color);
     padding: 1rem 0;
+    max-height: calc(100vh - 100%);
+    overflow-y: auto;
   }
 
   .navbar-menu.is-active .navbar-item {
