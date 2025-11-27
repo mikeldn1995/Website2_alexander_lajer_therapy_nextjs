@@ -5,14 +5,13 @@ import Layout from '@/components/Layout'
 
 export default function Contact() {
   const [formData, setFormData] = useState({
-    Name_First: '',
-    Name_Last: '',
-    Email: '',
-    PhoneNumber: '',
-    MultiLine: '',
-    Radio: '',
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
   })
   const [showSuccess, setShowSuccess] = useState(false)
+  const [showError, setShowError] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -20,39 +19,46 @@ export default function Contact() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, Radio: e.target.value }))
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setShowError(false)
 
-    const form = new FormData()
-    Object.entries(formData).forEach(([key, value]) => {
-      form.append(key, value)
-    })
+    // Web3Forms endpoint
+    const formDataToSend = new FormData()
+    formDataToSend.append('access_key', 'ca7a61ad-b455-4b79-a573-1fbcdd19c6e4')
+    formDataToSend.append('subject', 'New Contact Form Submission - Alexander Lajer Therapy')
+    formDataToSend.append('name', `${formData.name}`)
+    formDataToSend.append('email', formData.email)
+    formDataToSend.append('phone', formData.phone || 'Not provided')
+    formDataToSend.append('message', formData.message)
+    formDataToSend.append('from_name', 'Alexander Lajer Therapy Website')
 
     try {
-      const response = await fetch('https://usebasin.com/f/a854e413b64f', {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: form,
+        body: formDataToSend,
       })
 
-      if (response.ok) {
+      const result = await response.json()
+
+      if (result.success) {
         setShowSuccess(true)
         setFormData({
-          Name_First: '',
-          Name_Last: '',
-          Email: '',
-          PhoneNumber: '',
-          MultiLine: '',
-          Radio: '',
+          name: '',
+          email: '',
+          phone: '',
+          message: '',
         })
         setTimeout(() => setShowSuccess(false), 5000)
+      } else {
+        setShowError(true)
+        setTimeout(() => setShowError(false), 5000)
       }
     } catch (error) {
       console.error('Error submitting form:', error)
+      setShowError(true)
+      setTimeout(() => setShowError(false), 5000)
     } finally {
       setIsSubmitting(false)
     }
@@ -68,30 +74,18 @@ export default function Contact() {
                 <h2 className="title is-2 heading mb-4">Contact Form</h2>
 
                 <div className="field">
-                  <label className="label" htmlFor="firstName">First Name</label>
+                  <label className="label" htmlFor="name">
+                    Name <em>*</em>
+                  </label>
                   <div className="control">
                     <input
                       type="text"
-                      id="firstName"
-                      name="Name_First"
+                      id="name"
+                      name="name"
                       className="input"
-                      placeholder="First Name"
-                      value={formData.Name_First}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="field">
-                  <label className="label" htmlFor="lastName">Last Name</label>
-                  <div className="control">
-                    <input
-                      type="text"
-                      id="lastName"
-                      name="Name_Last"
-                      className="input"
-                      placeholder="Last Name"
-                      value={formData.Name_Last}
+                      placeholder="Your Name"
+                      required
+                      value={formData.name}
                       onChange={handleChange}
                     />
                   </div>
@@ -105,11 +99,11 @@ export default function Contact() {
                     <input
                       type="email"
                       id="email"
-                      name="Email"
+                      name="email"
                       className="input"
                       placeholder="Your Email"
                       required
-                      value={formData.Email}
+                      value={formData.email}
                       onChange={handleChange}
                     />
                   </div>
@@ -121,48 +115,30 @@ export default function Contact() {
                     <input
                       type="tel"
                       id="phone"
-                      name="PhoneNumber"
+                      name="phone"
                       className="input"
-                      placeholder="Phone Number"
-                      value={formData.PhoneNumber}
+                      placeholder="Phone Number (optional)"
+                      value={formData.phone}
                       onChange={handleChange}
                     />
                   </div>
                 </div>
 
                 <div className="field">
-                  <label className="label" htmlFor="message">Message</label>
+                  <label className="label" htmlFor="message">
+                    Message <em>*</em>
+                  </label>
                   <div className="control">
                     <textarea
                       id="message"
-                      name="MultiLine"
+                      name="message"
                       className="textarea"
-                      placeholder="Message"
+                      placeholder="Your Message"
                       rows={6}
-                      value={formData.MultiLine}
+                      required
+                      value={formData.message}
                       onChange={handleChange}
                     />
-                  </div>
-                </div>
-
-                <div className="field">
-                  <label className="label">
-                    Consent <em>*</em>
-                  </label>
-                  <div className="control">
-                    <label className="radio">
-                      <input
-                        type="radio"
-                        id="Radio_1"
-                        name="Radio"
-                        value="By submitting this form, I agree to be contacted and accept the Terms & Conditions."
-                        required
-                        checked={formData.Radio === 'By submitting this form, I agree to be contacted and accept the Terms & Conditions.'}
-                        onChange={handleRadioChange}
-                      />
-                      {' '}
-                      By submitting this form, I agree to be contacted and accept the Terms & Conditions.
-                    </label>
                   </div>
                 </div>
 
@@ -173,7 +149,7 @@ export default function Contact() {
                       className={`button is-primary ${isSubmitting ? 'is-loading' : ''}`}
                       disabled={isSubmitting}
                     >
-                      Submit
+                      {isSubmitting ? 'Sending...' : 'Submit'}
                     </button>
                   </div>
                 </div>
@@ -183,11 +159,28 @@ export default function Contact() {
                     backgroundColor: 'rgba(52, 199, 89, 0.1)', 
                     border: '1px solid rgba(52, 199, 89, 0.3)',
                     borderRadius: 'var(--radius-md)',
-                    color: 'rgb(52, 199, 89)'
+                    color: 'rgb(52, 199, 89)',
+                    padding: '1rem'
                   }}>
-                    Your message has been sent successfully.
+                    ✓ Your message has been sent successfully. I'll get back to you soon!
                   </div>
                 )}
+
+                {showError && (
+                  <div className="notification is-danger mt-3" style={{ 
+                    backgroundColor: 'rgba(255, 59, 48, 0.1)', 
+                    border: '1px solid rgba(255, 59, 48, 0.3)',
+                    borderRadius: 'var(--radius-md)',
+                    color: 'rgb(255, 59, 48)',
+                    padding: '1rem'
+                  }}>
+                    ✗ There was an error sending your message. Please try again or contact me directly at alex@alexanderlajertherapy.com
+                  </div>
+                )}
+
+                <p className="mt-4" style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                  <em>* Required fields</em>
+                </p>
               </form>
             </div>
 
@@ -196,7 +189,7 @@ export default function Contact() {
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4959.932757220836!2d-0.18725012353450438!3d51.568849871827446!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761b81c5713cab%3A0x4e697e6e497893e9!2sAlexander%20Lajer%20Therapy!5e0!3m2!1sen!2suk!4v1752734221820!5m2!1sen!2suk"
                 width="100%"
                 height="400"
-                style={{ border: 0 }}
+                style={{ border: 0, borderRadius: 'var(--radius-md)' }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -208,4 +201,3 @@ export default function Contact() {
     </Layout>
   )
 }
-
