@@ -1,0 +1,26 @@
+{
+  "name": "alexander-lajer-therapy",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "bulma": "^1.0.4",
+    "lucide-react": "^0.555.0",
+    "next": "^16.0.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "^16.0.5",
+    "typescript": "^5.7.2"
+  }
+}

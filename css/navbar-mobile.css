@@ -1,7 +1,0 @@
-/* Decrease navbar text size by 30% on mobile devices */
-@media (max-width: 768px) {
-  .navbar-nav .nav-link,
-  .navbar-brand {
-    font-size: 70% !important;
-  }
-}
